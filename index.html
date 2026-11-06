@@ -1,0 +1,512 @@
+<!doctype html>
+<!--
+  TubeClean install guide, served by GitHub Pages from this repo.
+  To change the instructions: edit this file on github.com (pencil icon) and commit.
+  The page updates about a minute later. The steps are plain HTML below; the script at the
+  bottom only handles the device tabs, step ticks, the Copy button and the version number.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>TubeClean Setup</title>
+<link rel="icon" href="images/icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+  :root {
+    color-scheme: light;
+    --paper: #f4f5f7;
+    --surface: #ffffff;
+    --surface-2: #eceef2;
+    --ink: #1b1f24;
+    --muted: #59616d;
+    --rule: #dfe2e7;
+    --accent: #c62828;
+    --accent-ink: #9b1c1c;
+    --accent-soft: #fbe9e9;
+    --ok: #2e7d32;
+    --ok-soft: #e7f3e8;
+    --warn-soft: #fff4dc;
+    --warn-ink: #7a4b00;
+    --tv: #232a33;
+    --tv-ink: #f2f4f7;
+    --shadow: rgba(20, 24, 30, 0.16);
+    --display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+    --body: "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+    --mono: "JetBrains Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      color-scheme: dark;
+      --paper: #121418;
+      --surface: #1a1e24;
+      --surface-2: #242a32;
+      --ink: #e8ebef;
+      --muted: #9ba4ae;
+      --rule: #2c323b;
+      --accent: #ef5350;
+      --accent-ink: #ff8a80;
+      --accent-soft: #3a1f21;
+      --ok: #81c784;
+      --ok-soft: #1f3322;
+      --warn-soft: #3a2f17;
+      --warn-ink: #f5c66b;
+      --tv: #0c0f13;
+      --tv-ink: #e8ebef;
+      --shadow: rgba(0, 0, 0, 0.5);
+    }
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-padding-top: 16px; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font: 17px/1.55 var(--body);
+    padding-inline: 16px;
+    padding-block: 32px 56px;
+  }
+  img { max-width: 100%; }
+  [hidden] { display: none !important; }
+  .page { max-width: 700px; margin: 0 auto; display: grid; gap: 40px; }
+  h1, h2 { font-family: var(--display); text-wrap: balance; margin: 0; letter-spacing: -0.01em; }
+  h1 { font-size: clamp(2rem, 6vw, 2.75rem); font-weight: 800; line-height: 1.05; }
+  h2 { font-size: 1.45rem; font-weight: 800; }
+  h3 { font: 700 1.08rem/1.35 var(--body); margin: 0; }
+  p { margin: 0; }
+  a { color: var(--accent-ink); text-underline-offset: 3px; }
+  .muted { color: var(--muted); }
+  .label { font: 700 0.78rem/1 var(--body); letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted); }
+  section { display: grid; gap: 14px; }
+
+  /* Header */
+  header { display: grid; grid-template-columns: auto 1fr; gap: 18px; align-items: center; }
+  .app-icon { width: 76px; height: 76px; }
+  .intro { display: grid; gap: 6px; }
+  .facts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+  .fact { font: 700 0.85rem/1 var(--body); padding: 7px 11px; border-radius: 999px; background: var(--surface-2); }
+  .fact.version { background: var(--ok-soft); color: var(--ok); font-variant-numeric: tabular-nums; }
+
+  /* What it looks like */
+  .thumbs { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 12px; }
+  .thumb { margin: 0; background: var(--surface); border: 1px solid var(--rule); border-radius: 12px; padding: 14px; display: grid; gap: 10px; grid-template-rows: 1fr auto; }
+  .thumb figcaption { font-size: 0.93rem; color: var(--muted); }
+  .thumb figcaption b { color: var(--ink); display: block; }
+  .tile { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; border-radius: 8px; }
+  .homescreen { border-radius: 8px; background: linear-gradient(160deg, #2b3440, #11151b); display: grid; place-items: center; align-content: center; gap: 6px; padding: 12px; min-height: 120px; }
+  .homescreen img { width: 64px; height: 64px; }
+  .homescreen span { color: #f2f4f7; font-size: 0.8rem; }
+
+  /* Settings paths, styled like the labels on a TV screen */
+  .path { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 2px 0; }
+  .path span { background: var(--tv); color: var(--tv-ink); font: 700 0.9rem/1 var(--body); padding: 8px 11px; border-radius: 6px; }
+  .path i { font-style: normal; color: var(--muted); font-weight: 700; }
+  .path span.on { background: var(--accent); color: #fff; }
+  kbd { display: inline-flex; align-items: center; justify-content: center; min-width: 1.9em; font: 700 0.85rem/1 var(--body); padding: 5px 9px; border-radius: 999px; background: var(--surface); color: var(--ink); border: 1px solid var(--rule); border-bottom-width: 3px; white-space: nowrap; }
+
+  /* Device check */
+  .verdicts { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; }
+  .verdict { border-radius: 8px; padding: 12px 14px; font-size: 0.95rem; }
+  .verdict b { display: block; margin-bottom: 2px; }
+  .verdict.yes { background: var(--ok-soft); }
+  .verdict.yes b { color: var(--ok); }
+  .verdict.no { background: var(--accent-soft); }
+  .verdict.no b { color: var(--accent-ink); }
+  .tip { font-size: 0.95rem; color: var(--muted); }
+  .tip b { color: var(--ink); }
+
+  /* Download link */
+  .link-card { border: 2px solid var(--accent); border-radius: 12px; background: var(--surface); padding: 18px; display: grid; gap: 12px; }
+  .link-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+  .link { font: 500 clamp(1.1rem, 4.6vw, 1.45rem)/1.3 var(--mono); background: var(--surface-2); padding: 10px 14px; border-radius: 8px; overflow-wrap: anywhere; user-select: all; flex: 1 1 240px; }
+  .button, button { font: 700 0.95rem/1 var(--body); padding: 12px 16px; border-radius: 8px; cursor: pointer; border: 1px solid var(--accent); background: var(--accent); color: #fff; text-decoration: none; display: inline-block; }
+  .button.quiet, button.quiet { background: transparent; color: var(--accent-ink); }
+  button:focus-visible, .button:focus-visible, .step-toggle:focus-visible { outline: 3px solid var(--accent-ink); outline-offset: 2px; }
+
+  /* Device tabs */
+  .tabs { display: flex; flex-wrap: wrap; gap: 4px; padding: 4px; border-radius: 10px; background: var(--surface-2); }
+  .tabs button { flex: 1 1 150px; background: transparent; border: 0; color: var(--muted); padding: 11px 12px; border-radius: 7px; }
+  .tabs button[aria-selected="true"] { background: var(--surface); color: var(--accent-ink); box-shadow: 0 1px 3px var(--shadow); }
+  .device { display: grid; gap: 16px; }
+  .device-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+  .progress { font: 700 0.9rem/1 var(--body); color: var(--muted); font-variant-numeric: tabular-nums; }
+
+  /* Steps: a real sequence, so they're numbered; tap a number to tick it off */
+  .steps { list-style: none; margin: 0; padding: 0; display: grid; }
+  .step { display: grid; grid-template-columns: 44px 1fr; gap: 14px; position: relative; padding-bottom: 26px; }
+  .step:not(:last-child)::before { content: ""; position: absolute; left: 21px; top: 44px; bottom: 4px; width: 2px; background: var(--rule); }
+  .step-toggle { width: 44px; height: 44px; border-radius: 50%; border: 2px solid var(--accent); background: var(--surface); color: var(--accent-ink); font: 800 1.1rem/1 var(--display); display: grid; place-items: center; padding: 0; }
+  .step.done .step-toggle { background: var(--ok); border-color: var(--ok); color: #fff; }
+  .step.done h3 { color: var(--muted); }
+  .step-body { display: grid; gap: 8px; padding-top: 9px; min-width: 0; }
+  .step-body ul { margin: 0; padding-left: 1.15em; display: grid; gap: 4px; }
+  .note { font-size: 0.93rem; color: var(--muted); }
+  .note b { color: var(--ink); }
+  .variant { background: var(--warn-soft); border-radius: 8px; padding: 10px 12px; font-size: 0.93rem; display: grid; gap: 4px; }
+  .variant > b:first-child { color: var(--warn-ink); }
+
+  /* Controls */
+  .use { display: grid; gap: 10px; }
+  .use h3 { margin-top: 8px; }
+  .buttons { display: grid; border-top: 1px solid var(--rule); }
+  .buttons div { display: grid; grid-template-columns: minmax(130px, 38%) 1fr; gap: 12px; align-items: center; padding: 11px 0; border-bottom: 1px solid var(--rule); }
+
+  /* Troubleshooting */
+  .trouble { display: grid; gap: 12px; margin: 0; }
+  .trouble div { background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; padding: 14px 16px; display: grid; gap: 4px; }
+  .trouble dt { font-weight: 700; }
+  .trouble dd { margin: 0; color: var(--muted); display: grid; gap: 6px; }
+
+  footer { font-size: 0.9rem; color: var(--muted); border-top: 1px solid var(--rule); padding-top: 18px; display: grid; gap: 6px; }
+
+  @media (max-width: 480px) { .thumbs { grid-template-columns: 1fr; } }
+  @media (max-width: 420px) {
+    header { grid-template-columns: 1fr; }
+    .buttons div { grid-template-columns: 1fr; gap: 4px; }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .step-toggle, .tabs button { transition: background-color .15s, border-color .15s, color .15s; }
+  }
+</style>
+</head>
+<body>
+<main class="page">
+
+  <header>
+    <img class="app-icon" src="images/icon.png" alt="TubeClean app icon" width="76" height="76">
+    <div class="intro">
+      <span class="label">Install guide</span>
+      <h1>TubeClean on your TV or Android phone</h1>
+      <p class="muted">YouTube without the ads, as a guest, with no watch history kept.</p>
+      <div class="facts">
+        <span class="fact">About 5 minutes</span>
+        <span class="fact">No computer needed</span>
+        <!-- The script replaces this with the newest release on GitHub. -->
+        <span class="fact version" id="version">Latest version 1.2</span>
+      </div>
+    </div>
+  </header>
+
+  <section aria-labelledby="look-title">
+    <h2 id="look-title">What it looks like</h2>
+    <div class="thumbs">
+      <figure class="thumb">
+        <img class="tile" src="images/tile.png" alt="The TubeClean tile: a red shield with a white play button, next to the words TubeClean, ad-free YouTube" width="640" height="360">
+        <figcaption><b>On a TV</b>This tile appears in your list of apps.</figcaption>
+      </figure>
+      <figure class="thumb">
+        <div class="homescreen"><img src="images/icon.png" alt="" width="64" height="64"><span>TubeClean</span></div>
+        <figcaption><b>On a phone</b>This icon appears with your other apps.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section aria-labelledby="check-title">
+    <h2 id="check-title">First, check your device</h2>
+    <p>TubeClean runs on Android, including the versions of Android inside Fire TV and Google TV.</p>
+    <div class="verdicts">
+      <div class="verdict yes"><b>Fire TV with “Fire OS”</b>Fire TV Stick, Lite, HD, 4K, 4K Max, the Fire TV Cube, and TVs with Fire TV built in (Insignia, Toshiba and others).</div>
+      <div class="verdict yes"><b>Google TV or Android TV</b>Sony, TCL, Philips and Hisense models, Chromecast with Google TV, the Google TV Streamer, Nvidia Shield, onn. and Xiaomi boxes.</div>
+      <div class="verdict yes"><b>Android phone or tablet</b>Android 5.1 or newer, which is almost every phone from the last ten years: Samsung, Pixel, Motorola, OnePlus, Xiaomi and so on.</div>
+      <div class="verdict no"><b>Can’t install it</b>Samsung and LG TVs (they run Tizen and webOS), Roku, Vizio, Apple TV, iPhone, iPad, and Fire TVs with “Vega OS”, such as the Fire TV Stick 4K Select.</div>
+    </div>
+    <p class="tip"><b>Not sure which Fire TV you have?</b> Go to <span class="path"><span>Settings</span><i>›</i><span>My Fire TV</span><i>›</i><span>About</span></span> and look for “Fire OS” or “Vega OS” in the software version.</p>
+    <p class="tip"><b>TV can’t install it?</b> Plug a Fire TV Stick or a Google TV Streamer into one of its HDMI ports, and install TubeClean on that.</p>
+  </section>
+
+  <section aria-labelledby="link-title">
+    <h2 id="link-title">Your download link</h2>
+    <div class="link-card">
+      <div class="link-row">
+        <!-- If the download link ever changes, change it here and in the "Download TubeClean" button. -->
+        <span class="link" id="link">tinyurl.com/2bhzu5n3</span>
+        <button type="button" id="copy">Copy</button>
+      </div>
+      <p class="note">It always downloads the newest version. On a TV you’ll type it into the Downloader app; on a phone, tap <b>Download TubeClean</b> in the phone steps below.</p>
+    </div>
+  </section>
+
+  <section aria-labelledby="install-title">
+    <h2 id="install-title">Install it</h2>
+    <div class="tabs" role="tablist" aria-label="Your device">
+      <button type="button" role="tab" id="tab-firetv" aria-controls="firetv" aria-selected="true">Fire TV &amp; Fire Stick</button>
+      <button type="button" role="tab" id="tab-androidtv" aria-controls="androidtv" aria-selected="false">Google TV &amp; Android TV</button>
+      <button type="button" role="tab" id="tab-phone" aria-controls="phone" aria-selected="false">Android phone &amp; tablet</button>
+    </div>
+    <p class="note">Tap a step’s number when you finish it. Your ticks are remembered on this device.</p>
+
+    <!-- ===================== Fire TV ===================== -->
+    <div class="device" id="firetv" role="tabpanel" aria-labelledby="tab-firetv">
+      <div class="device-head">
+        <p class="muted">For every Fire TV running Fire OS, from the 2015 box to the Fire TV Stick 4K Max.</p>
+        <span class="progress"></span>
+      </div>
+      <ol class="steps">
+        <li class="step"><button type="button" class="step-toggle">1</button><div class="step-body">
+          <h3>Get the Downloader app</h3>
+          <p>On the Home screen, open search (the magnifying glass) and type <b>Downloader</b>. Pick the one with the orange icon, by AFTVnews, and select <b>Get</b> or <b>Download</b>. It’s free.</p>
+        </div></li>
+        <li class="step"><button type="button" class="step-toggle">2</button><div class="step-body">
+          <h3>Turn on developer mode</h3>
+          <div class="path"><span>Settings</span><i>›</i><span>My Fire TV</span><i>›</i><span class="on">About</span></div>
+          <p>Highlight the first line (your Fire TV’s name) and press <kbd>Select</kbd> <b>7 times</b>. A message says you’re now a developer. Press <kbd>Back</kbd>.</p>
+          <p class="note">If you already see <b>Developer options</b> under My Fire TV, skip this step.</p>
+        </div></li>
+        <li class="step"><button type="button" class="step-toggle">3</button><div class="step-body">
+          <h3>Allow Downloader to install apps</h3>
+          <div class="path"><span>Settings</span><i>›</i><span>My Fire TV</span><i>›</i><span>Developer options</span><i>›</i><span>Install unknown apps</span><i>›</i><span class="on">Downloader: ON</span></div>
+          <div class="variant"><b>Older Fire TV (Fire OS 5 or 6)?</b><span>There’s no “Install unknown apps” there. Turn <b>Apps from Unknown Sources</b> ON instead and confirm with <b>Turn On</b>.</span></div>
+        </div></li>
+        <li class="step"><button type="button" class="step-toggle">4</button><div class="step-body">
+          <h3>Download TubeClean</h3>
+          <p>Open <b>Downloader</b>. If it asks for access to files, choose <b>Allow</b>, and close the quick-start tips.</p>
+          <p>On its Home tab, select the address box, type the download link from above, and select <b>Go</b>.</p>
+        </div></li>
+        <li class="step"><button type="button" class="step-toggle">5</button><div class="step-body">
+          <h3>Install it</h3>
+          <p>An install screen for TubeClean appears. Select <b>Install</b>; if you can’t see the button, press down on the remote to reach it. When it says the app is installed, select <b>Done</b>.</p>
+        </div></li>
+        <li class="step"><button type="button" class="step-toggle">6</button><div class="step-body">
+          <h3>Delete the downloaded file</h3>
+          <p>Downloader offers to delete the file it downloaded. Choose <b>Delete</b>, then <b>Delete</b> again. The app stays installed; only the leftover file goes.</p>
+        </div></li>
+        <li class="step"><button type="button" class="step-toggle">7</button><div class="step-body">
+          <h3>Put it on your Home screen</h3>
+          <p>Open your full list of apps: the <b>Apps</b> icon on the Home screen, or <b>Your Apps &amp; Channels › See All</b> on older models. TubeClean is at the end. Highlight it, press <kbd>☰</kbd>, choose <b>Move</b>, and move it to the front.</p>
+          <p class="note">Optional, for extra safety: go back to step 3’s screen and turn Downloader <b>OFF</b>. Turn it on again only when you install an update.</p>
+        </div></li>
+      </ol>
+    </div>
+
+    <!-- ===================== Google TV / Android TV ===================== -->
+    <div class="device" id="androidtv" role="tabpanel" aria-labelledby="tab-androidtv" hidden>
+      <div class="device-head">
+        <p class="muted">For TVs and boxes with Google TV or Android TV. Menu names differ slightly between brands; the older wording is shown where it differs.</p>
+        <span class="progress"></span>
+      </div>
+      <ol class="steps">
+        <li class="step"><button type="button" class="step-toggle">1</button><div class="step-body">
+          <h3>Get the Downloader app</h3>
+          <p>Open the <b>Google Play Store</b> on the TV (or search from the Home screen) and look for <b>Downloader</b>. Pick the one with the orange icon, by AFTVnews, and select <b>Install</b>. It’s free.</p>
+        </div></li>
+        <li class="step"><button type="button" class="step-toggle">2</button><div class="step-body">
+          <h3>Turn on developer mode</h3>
+          <div class="path"><span>Settings</span><i>›</i><span>System</span><i>›</i><span>About</span><i>›</i><span class="on">Android TV OS build</span></div>
+          <p>Highlight <b>Android TV OS build</b> and press <kbd>Select</kbd> <b>7 times</b>, until it says you’re now a developer.</p>
+          <div class="variant"><b>Older Android TV (Sony, Philips, Mi Box)?</b><span>Use <b>Settings › Device Preferences › About › Build</b> instead. If it says you’re already a developer, skip this step.</span></div>
+        </div></li>
+        <li class="step"><button type="button" class="step-toggle">3</button><div class="step-body">
+          <h3>Allow Downloader to install apps</h3>
+          <div class="path"><span>Settings</span><i>›</i><span>Apps</span><i>›</i><span>Security &amp; restrictions</span><i>›</i><span>Unknown sources</span><i>›</i><span class="on">Downloader: ON</span></div>
+          <div class="variant"><b>Older Android TV?</b><span>It’s under <b>Settings › Device Preferences › Security &amp; restrictions › Unknown sources</b>.</span></div>
+        </div></li>
+        <li class="step"><button type="button" class="step-toggle">4</button><div class="step-body">
+          <h3>Download TubeClean</h3>
+          <p>Open <b>Downloader</b>. If it asks for access to files, choose <b>Allow</b>, and close the quick-start tips.</p>
+          <p>Select the address box, type the download link from above, and select <b>Go</b>.</p>
+        </div></li>
+        <li class="step"><button type="button" class="step-toggle">5</button><div class="step-body">
+          <h3>Install it</h3>
+          <p>Select <b>Install</b>, then <b>Done</b>. When Downloader offers to delete the downloaded file, choose <b>Delete</b>; the app stays installed.</p>
+          <p class="note">If <b>Google Play Protect</b> asks about an app it doesn’t know, let it scan the app, or choose <b>Install anyway</b>.</p>
+        </div></li>
+        <li class="step"><button type="button" class="step-toggle">6</button><div class="step-body">
+          <h3>Find it and keep it handy</h3>
+          <p><b>Google TV:</b> go to the <b>Apps</b> tab, then <b>Your apps › See all</b>. <b>Android TV:</b> select <b>Apps</b> on the Home screen. Press and hold <kbd>Select</kbd> on the TubeClean tile to add it to your favourites.</p>
+          <p class="note">Optional, for extra safety: go back to step 3’s screen and turn Downloader <b>OFF</b>. Turn it on again only when you install an update.</p>
+        </div></li>
+      </ol>
+    </div>
+
+    <!-- ===================== Android phone / tablet ===================== -->
+    <div class="device" id="phone" role="tabpanel" aria-labelledby="tab-phone" hidden>
+      <div class="device-head">
+        <p class="muted">For Android phones and tablets. Do these steps on the phone itself.</p>
+        <span class="progress"></span>
+      </div>
+      <ol class="steps">
+        <li class="step"><button type="button" class="step-toggle">1</button><div class="step-body">
+          <h3>Download TubeClean</h3>
+          <p><a class="button" href="https://tinyurl.com/2bhzu5n3">Download TubeClean</a></p>
+          <p>Tap the button in <b>Chrome</b> (or type the link from above into Chrome’s address bar). If Chrome warns that the file might be harmful, choose <b>Download anyway</b>. Chrome says that about every app that doesn’t come from the Play Store.</p>
+          <div class="variant"><b>Samsung?</b><span>Samsung Internet works the same way. Its file goes to <b>My Files › Downloads</b>.</span></div>
+        </div></li>
+        <li class="step"><button type="button" class="step-toggle">2</button><div class="step-body">
+          <h3>Open the file</h3>
+          <p>Tap <b>Open</b> on the “Download complete” message. If it’s gone, open the <b>Files</b> app (<b>My Files</b> on Samsung), go to <b>Downloads</b>, and tap <b>TubeClean.apk</b>.</p>
+        </div></li>
+        <li class="step"><button type="button" class="step-toggle">3</button><div class="step-body">
+          <h3>Allow installs from that app</h3>
+          <p>If the phone says it isn’t allowed to install unknown apps from this source, tap <b>Settings</b>, turn on <b>Allow from this source</b>, then go back. It only asks the first time.</p>
+          <div class="variant"><b>Android 7 or older?</b><span>Instead, it sends you to <b>Settings › Security › Unknown sources</b>. Turn it on, confirm with <b>OK</b>, then go back.</span></div>
+          <div class="variant"><b>Xiaomi, Redmi or POCO?</b><span>An extra security check may appear. Tap <b>Continue</b> or <b>Install anyway</b>; you may have to wait a few seconds for the button.</span></div>
+        </div></li>
+        <li class="step"><button type="button" class="step-toggle">4</button><div class="step-body">
+          <h3>Install it</h3>
+          <p>Tap <b>Install</b>, then <b>Open</b>. From then on, open it from the red shield icon shown at the top of this page.</p>
+          <p class="note">If <b>Google Play Protect</b> asks about an app it doesn’t know, let it scan the app and then install, or tap <b>More details › Install anyway</b>.</p>
+        </div></li>
+        <li class="step"><button type="button" class="step-toggle">5</button><div class="step-body">
+          <h3>Delete the downloaded file</h3>
+          <p>In <b>Files › Downloads</b>, delete <b>TubeClean.apk</b>. The app stays installed; only the leftover file goes.</p>
+          <p class="note">Optional, for extra safety: turn <b>Allow from this source</b> off again, and back on only when you install an update.</p>
+        </div></li>
+      </ol>
+      <p class="tip"><b>Amazon Fire tablet?</b> Fire tablets run Fire OS, which is Android, so the same steps should work with the <b>Silk</b> browser. Allow it under <b>Settings › Security &amp; Privacy › Apps from Unknown Sources</b>. This hasn’t been tested yet.</p>
+    </div>
+  </section>
+
+  <section aria-labelledby="update-title">
+    <h2 id="update-title">Getting a new version</h2>
+    <p>When you hear there’s a new version, install it the same way, straight over the old one. There’s no need to uninstall first, and your ad counts carry over.</p>
+    <ul>
+      <li><b>Fire TV, Google TV, Android TV:</b> steps 4 to 6 (Downloader is already set up).</li>
+      <li><b>Phone:</b> steps 1, 2, 4 and 5.</li>
+    </ul>
+  </section>
+
+  <section class="use" aria-labelledby="use-title">
+    <h2 id="use-title">Using TubeClean</h2>
+    <p>The Home screen looks almost empty because nothing about you is remembered, so start with <b>Search</b>. There’s no sign-in.</p>
+    <h3>On a Fire TV, Google TV or Android TV</h3>
+    <p class="muted">Each time it opens, it takes a few seconds to get past YouTube’s welcome screens on its own. The very first video you play may take about 20 seconds to start.</p>
+    <div class="buttons">
+      <div><span><kbd>Arrows</kbd> <kbd>Select</kbd> <kbd>▶❚❚</kbd></span><span>Work as usual in YouTube</span></div>
+      <div><span><kbd>Back</kbd></span><span>Goes back one screen in YouTube</span></div>
+      <div><span><kbd>Back</kbd> hold 1 sec</span><span>Closes TubeClean</span></div>
+      <div><span><kbd>☰</kbd></span><span>Shows how many ads were blocked today and over the last 30 days</span></div>
+    </div>
+    <p class="note">Many Google TV remotes have no <kbd>☰</kbd> button. Ads are still blocked; the counts just can’t be shown on those TVs yet.</p>
+    <h3>On a phone</h3>
+    <p class="muted">You get YouTube’s mobile site with the ads taken out.</p>
+    <div class="buttons">
+      <div><span>Tap, scroll, search</span><span>Work as usual in YouTube</span></div>
+      <div><span>Back button or swipe</span><span>Goes back one screen; on YouTube’s Home it closes TubeClean</span></div>
+      <div><span>Fullscreen button</span><span>Turns the video sideways; Back returns</span></div>
+      <div><span><kbd>🛡 3</kbd> bottom right</span><span>Ads blocked in this video. Tap it for today and the last 30 days</span></div>
+    </div>
+    <p class="note">On both, searches and watch history are erased whenever you leave the app: going Home, switching apps, or the screen turning off. Only the count of blocked ads is kept on the device.</p>
+  </section>
+
+  <section aria-labelledby="trouble-title">
+    <h2 id="trouble-title">If something goes wrong</h2>
+    <dl class="trouble">
+      <div><dt>“Not allowed to install unknown apps from this source”</dt>
+        <dd>Step 3 isn’t done yet. Allow Downloader (TV) or your browser or Files app (phone), then try again.</dd></div>
+      <div><dt>Downloader shows a web page or an error instead of downloading</dt>
+        <dd>Check the link letter by letter and select <b>Go</b> again.</dd></div>
+      <div><dt>“App not installed”</dt>
+        <dd>Check your device at the top of this page. If it should work, tell the person who sent you this page the model and its Fire OS, Android TV or Android version.</dd></div>
+      <div><dt>Google Play Protect blocked it</dt>
+        <dd>Tap <b>More details</b>, then <b>Install anyway</b>. Play Protect warns about any app that isn’t from the Play Store.</dd></div>
+      <div><dt>YouTube asks you to “sign in to confirm you’re not a bot”</dt>
+        <dd>You have an old version. Install the newest one from the link above; it goes straight over the old one.</dd></div>
+      <div><dt>TubeClean shows “Blocker needs revision”</dt>
+        <dd>YouTube changed something and a few ads may slip through. Let the person who sent you this page know; a fix will follow as a new version.</dd></div>
+      <div><dt>You want to remove it</dt>
+        <dd>
+          <span><b>Fire TV:</b> <span class="path"><span>Settings</span><i>›</i><span>Applications</span><i>›</i><span>Manage installed applications</span><i>›</i><span>TubeClean</span><i>›</i><span class="on">Uninstall</span></span></span>
+          <span><b>Google TV / Android TV:</b> Settings › Apps › TubeClean › Uninstall.</span>
+          <span><b>Phone:</b> press and hold the TubeClean icon, then choose <b>App info › Uninstall</b>.</span>
+        </dd></div>
+    </dl>
+  </section>
+
+  <footer>
+    <p>TubeClean is a small private app, shared between friends. It isn’t from YouTube, Google or Amazon and isn’t in any app store. Please don’t post this page publicly.</p>
+    <p>Questions? Ask the person who sent you this page. Page updated 5 November 2026.</p>
+  </footer>
+</main>
+
+<script>
+(function () {
+  'use strict';
+  var store = {
+    get: function (k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
+    set: function (k, v) { try { v === null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch (e) {} }
+  };
+
+  // Device tabs. #firetv, #androidtv or #phone in the address opens that tab, so you can
+  // send someone straight to their device. Otherwise phones get the phone tab.
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('[role="tab"]'));
+  function show(id, remember) {
+    tabs.forEach(function (t) {
+      var on = t.getAttribute('aria-controls') === id;
+      t.setAttribute('aria-selected', String(on));
+      document.getElementById(t.getAttribute('aria-controls')).hidden = !on;
+    });
+    if (remember) store.set('tc-device', id);
+  }
+  tabs.forEach(function (t) {
+    t.addEventListener('click', function () {
+      var id = t.getAttribute('aria-controls');
+      show(id, true);
+      history.replaceState(null, '', '#' + id);
+    });
+  });
+  var devices = ['firetv', 'androidtv', 'phone'];
+  var fromHash = location.hash.slice(1);
+  var ua = navigator.userAgent;
+  var guess = /AFT/.test(ua) ? 'firetv' : (/Android/.test(ua) && /Mobile/.test(ua)) ? 'phone' : null;
+  var saved = store.get('tc-device');
+  show(devices.indexOf(fromHash) > -1 ? fromHash : devices.indexOf(saved) > -1 ? saved : guess || 'firetv', false);
+  window.addEventListener('hashchange', function () {
+    var id = location.hash.slice(1);
+    if (devices.indexOf(id) > -1) show(id, true);
+  });
+
+  // Step ticks, remembered per step on this device.
+  Array.prototype.forEach.call(document.querySelectorAll('.device'), function (device) {
+    var steps = Array.prototype.slice.call(device.querySelectorAll('.step'));
+    var progress = device.querySelector('.progress');
+    function count() { progress.textContent = steps.filter(function (s) { return s.classList.contains('done'); }).length + ' of ' + steps.length + ' done'; }
+    steps.forEach(function (step, i) {
+      var key = 'tc-' + device.id + '-' + (i + 1);
+      var toggle = step.querySelector('.step-toggle');
+      function set(done) {
+        step.classList.toggle('done', done);
+        toggle.textContent = done ? '✓' : String(i + 1);
+        toggle.setAttribute('aria-label', 'Step ' + (i + 1) + (done ? ', done. Tap to untick.' : '. Tap when done.'));
+      }
+      set(store.get(key) === '1');
+      toggle.addEventListener('click', function () {
+        var done = !step.classList.contains('done');
+        set(done);
+        store.set(key, done ? '1' : null);
+        count();
+      });
+    });
+    count();
+  });
+
+  // Copy button.
+  var copy = document.getElementById('copy');
+  var link = document.getElementById('link');
+  copy.addEventListener('click', function () {
+    var text = link.textContent.trim();
+    function selectIt() { var r = document.createRange(); r.selectNodeContents(link); var s = getSelection(); s.removeAllRanges(); s.addRange(r); }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () { copy.textContent = 'Copied'; setTimeout(function () { copy.textContent = 'Copy'; }, 2000); }, selectIt);
+    } else selectIt();
+  });
+
+  // Newest version, from the GitHub releases this page lives next to. Keeps the
+  // written-in version if GitHub can't be reached.
+  fetch('https://api.github.com/repos/srispace1645/tubeclean-release/releases/latest')
+    .then(function (r) { return r.ok ? r.json() : null; })
+    .then(function (rel) {
+      if (!rel || !rel.tag_name) return;
+      var v = rel.tag_name.replace(/^v/i, '');
+      var d = new Date(rel.published_at);
+      var when = isNaN(d) ? '' : ' · ' + d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+      document.getElementById('version').textContent = 'Latest version ' + v + when;
+    })
+    .catch(function () {});
+})();
+</script>
+</body>
+</html>
